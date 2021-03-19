@@ -1,0 +1,176 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="KS_StuInfoModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Info_User">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserName" Type="varchar" MaxLength="50" />
+          <Property Name="Sex" Type="bit" />
+          <Property Name="PassWord" Type="varchar" MaxLength="50" />
+          <Property Name="Phone" Type="varchar" MaxLength="50" />
+          <Property Name="IsDelete" Type="bit" />
+        </EntityType>
+        <EntityType Name="T_Course">
+          <Key>
+            <PropertyRef Name="Cno" />
+          </Key>
+          <Property Name="Cno" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Cname" Type="nvarchar" MaxLength="50" />
+          <Property Name="Hours" Type="int" />
+        </EntityType>
+        <!--生成过程中发现错误:
+警告 6002: 表/视图“KS_StuInfo.dbo.T_Score”未定义主键。已推断出该键，并将定义创建为只读的表/视图。-->
+        <EntityType Name="T_Score">
+          <Key>
+            <PropertyRef Name="Sno" />
+          </Key>
+          <Property Name="Sno" Type="int" Nullable="false" />
+          <Property Name="Cno" Type="nvarchar" MaxLength="50" />
+          <Property Name="Grade" Type="int" />
+        </EntityType>
+        <EntityType Name="T_Student">
+          <Key>
+            <PropertyRef Name="Sno" />
+          </Key>
+          <Property Name="Sno" Type="int" Nullable="false" />
+          <Property Name="Sname" Type="nvarchar" MaxLength="50" />
+          <Property Name="Ssex" Type="nvarchar" MaxLength="50" />
+          <Property Name="Sage" Type="int" />
+          <Property Name="Depart" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityContainer Name="KS_StuInfoModelStoreContainer">
+          <EntitySet Name="Info_User" EntityType="Self.Info_User" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="T_Course" EntityType="Self.T_Course" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="T_Student" EntityType="Self.T_Student" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="T_Score" EntityType="Self.T_Score" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [T_Score].[Sno] AS [Sno], 
+    [T_Score].[Cno] AS [Cno], 
+    [T_Score].[Grade] AS [Grade]
+    FROM [dbo].[T_Score] AS [T_Score]</DefiningQuery>
+          </EntitySet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="KS_StuInfoModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="KS_StuInfoEntities" annotation:LazyLoadingEnabled="true" >
+          <EntitySet Name="T_Course" EntityType="KS_StuInfoModel.T_Course" />
+          <EntitySet Name="T_Score" EntityType="KS_StuInfoModel.T_Score" />
+          <EntitySet Name="T_Student" EntityType="KS_StuInfoModel.T_Student" />
+          <EntitySet Name="Info_User" EntityType="KS_StuInfoModel.Info_User" />
+        </EntityContainer>
+        <EntityType Name="T_Course">
+          <Key>
+            <PropertyRef Name="Cno" />
+          </Key>
+          <Property Name="Cno" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Cname" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Hours" Type="Int32" />
+        </EntityType>
+        <EntityType Name="T_Score">
+          <Key>
+            <PropertyRef Name="Sno" />
+          </Key>
+          <Property Name="Sno" Type="Int32" Nullable="false" />
+          <Property Name="Cno" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Grade" Type="Int32" />
+        </EntityType>
+        <EntityType Name="T_Student">
+          <Key>
+            <PropertyRef Name="Sno" />
+          </Key>
+          <Property Name="Sno" Type="Int32" Nullable="false" />
+          <Property Name="Sname" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Ssex" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Sage" Type="Int32" />
+          <Property Name="Depart" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Info_User">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Sex" Type="Boolean" />
+          <Property Name="PassWord" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Phone" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="IsDelete" Type="Boolean" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="KS_StuInfoModelStoreContainer" CdmEntityContainer="KS_StuInfoEntities" >
+          <EntitySetMapping Name="T_Course">
+            <EntityTypeMapping TypeName="KS_StuInfoModel.T_Course">
+              <MappingFragment StoreEntitySet="T_Course">
+                <ScalarProperty Name="Hours" ColumnName="Hours" />
+                <ScalarProperty Name="Cname" ColumnName="Cname" />
+                <ScalarProperty Name="Cno" ColumnName="Cno" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="T_Score">
+            <EntityTypeMapping TypeName="KS_StuInfoModel.T_Score">
+              <MappingFragment StoreEntitySet="T_Score">
+                <ScalarProperty Name="Grade" ColumnName="Grade" />
+                <ScalarProperty Name="Cno" ColumnName="Cno" />
+                <ScalarProperty Name="Sno" ColumnName="Sno" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="T_Student">
+            <EntityTypeMapping TypeName="KS_StuInfoModel.T_Student">
+              <MappingFragment StoreEntitySet="T_Student">
+                <ScalarProperty Name="Depart" ColumnName="Depart" />
+                <ScalarProperty Name="Sage" ColumnName="Sage" />
+                <ScalarProperty Name="Ssex" ColumnName="Ssex" />
+                <ScalarProperty Name="Sname" ColumnName="Sname" />
+                <ScalarProperty Name="Sno" ColumnName="Sno" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Info_User">
+            <EntityTypeMapping TypeName="KS_StuInfoModel.Info_User">
+              <MappingFragment StoreEntitySet="Info_User">
+                <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="PassWord" ColumnName="PassWord" />
+                <ScalarProperty Name="Sex" ColumnName="Sex" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="无" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
