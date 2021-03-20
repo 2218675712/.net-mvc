@@ -10,7 +10,7 @@ namespace WebApplication1.BLL
         /// 数据绑定
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<Info_User> GetList()
+        public List<Info_User> GetList()
         {
             return Dao.GetEntities(x => x.IsDelete == false).ToList();
         }
@@ -73,6 +73,12 @@ namespace WebApplication1.BLL
             return Dao.GetEntities(x => x.ID == ID).FirstOrDefault();
         }
 
+        /// <summary>
+        /// 根据手机号及密码进行登录
+        /// </summary>
+        /// <param name="phone">手机号</param>
+        /// <param name="pwd">密码</param>
+        /// <returns></returns>
         public Info_User Login(string phone,string pwd)
         {
             return Dao.GetEntity(x => x.Phone == phone && x.PassWord == pwd);

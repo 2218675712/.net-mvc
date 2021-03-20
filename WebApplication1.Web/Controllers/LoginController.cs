@@ -48,12 +48,12 @@ namespace WebApplication1.Web.Controllers
         public JsonResult GetLoginByPhone(Info_User_Model model)
         {
             JsonResult jr = new JsonResult();
-            Object obj = null;
+            Object obj;
             Info_User_BLL infoUserBll = new Info_User_BLL();
             Info_User infoUser = infoUserBll.Login(model.Phone, model.PassWord);
             if (infoUser != null)
             {
-                obj = new {code = "200", message = "登录成功", type = "success"};
+                obj = new {code = "200", message = "登录成功", type = "success",reutrnUrl=Url.Content("~/User/Index")};
             }
             else
             {

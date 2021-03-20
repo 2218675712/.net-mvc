@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplication1.DAL", "WebA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplication1.BLL", "WebApplication1.BLL\WebApplication1.BLL.csproj", "{70B3E9FD-B9E7-4C94-AB58-B0469697FBEF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FurnitureServicePlatform.Common", "FurnitureServicePlatform.Common\FurnitureServicePlatform.Common.csproj", "{427F6B65-A8DA-4857-845D-090CFB4993A8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{70B3E9FD-B9E7-4C94-AB58-B0469697FBEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{70B3E9FD-B9E7-4C94-AB58-B0469697FBEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{70B3E9FD-B9E7-4C94-AB58-B0469697FBEF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{427F6B65-A8DA-4857-845D-090CFB4993A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{427F6B65-A8DA-4857-845D-090CFB4993A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{427F6B65-A8DA-4857-845D-090CFB4993A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{427F6B65-A8DA-4857-845D-090CFB4993A8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

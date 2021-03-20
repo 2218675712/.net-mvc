@@ -39,7 +39,8 @@ async function login() {
     });
     const result = await fetch("/Login/GetLoginByPhone", {method: "post", body: formData}).then(result => result.json())
     if (result.type === "success") {
-        alert(result.message)
+        // alert(result.message)
+        window.location.href=result.reutrnUrl;
     }
 }
 

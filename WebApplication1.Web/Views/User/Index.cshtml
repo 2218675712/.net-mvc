@@ -1,0 +1,46 @@
+﻿@using WebApplication1.Entity
+
+@{
+    Layout = null;
+    List<Info_User> infoUserModels = ViewData["list"] as List<Info_User>;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width"/>
+    <link href="~/Content/bootstrap.css" rel="stylesheet"/>
+    <title>Index</title>
+</head>
+<body>
+<div>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">用户ID</th>
+            <th scope="col">用户名</th>
+            <th scope="col">密码</th>
+            <th scope="col">手机号</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in  infoUserModels)
+        {
+            <tr>
+                <th scope="row">@item.ID</th>
+                <td>@item.UserName</td>
+                <td>@item.PassWord</td>
+                <td>@item.Phone</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<script src="~/Scripts/bootstrap.js"></script>
+<script>
+
+</script>
+</body>
+</html>
