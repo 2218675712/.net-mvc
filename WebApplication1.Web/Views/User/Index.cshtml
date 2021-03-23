@@ -3,6 +3,10 @@
 @{
     Layout = null;
     List<Info_User> infoUserModels = ViewData["list"] as List<Info_User>;
+    if (infoUserModels == null)
+    {
+        infoUserModels = new List<Info_User>();
+    }
 }
 
 <!DOCTYPE html>
@@ -15,32 +19,121 @@
 </head>
 <body>
 <div>
-    <table class="table">
-        <thead>
-        <tr>
-            <th scope="col">用户ID</th>
-            <th scope="col">用户名</th>
-            <th scope="col">密码</th>
-            <th scope="col">手机号</th>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach (var item in  infoUserModels)
-        {
+
+    <div class="addUser">
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary"  onclick="openAddUserModal()">
+            添加/修改用户
+        </button>
+
+        <!-- Modal -->
+        <div class="modal fade " id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="staticBackdropLabel">添加用户</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="modalContent"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary"  onclick="submit()" >提交</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="userList">
+
+        <table class="table">
+            <thead>
             <tr>
-                <th scope="row">@item.ID</th>
-                <td>@item.UserName</td>
-                <td>@item.PassWord</td>
-                <td>@item.Phone</td>
+                <th scope="col">用户ID</th>
+                <th scope="col">用户名</th>
+                <th scope="col">密码</th>
+                <th scope="col">手机号</th>
             </tr>
-        }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+
+            @foreach (var item in infoUserModels)
+            {
+                <tr>
+                    <th scope="row">@item.ID</th>
+                    <td>@item.UserName</td>
+                    <td>@item.PassWord</td>
+                    <td>@item.Phone</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+        <div class="alert alert-success alert-dismissible fade show fixed-top" style="visibility: hidden" role="alert" id="myAlert">
+            添加成功!
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    </div>
+
 </div>
 <script src="~/Scripts/jquery-3.4.1.js"></script>
-<script src="~/Scripts/bootstrap.js"></script>
+<script src="~/Scripts/bootstrap.bundle.js"></script>
 <script>
+// 创建一个模态框
+let myModal = new bootstrap.Modal(document.getElementById('staticBackdrop'), {
+    backdrop:"static"
+})
 
+/**
+ * 弹出添加模态框
+ *
+ */
+async function openAddUserModal() {
+    
+    document.querySelector("#modalContent").innerHTML = await getAddUserInfo();
+    myModal.toggle()
+}
+
+/**
+ * 获取添加用户的相关资料
+ *
+ */
+async function getAddUserInfo() {
+    return await fetch("/User/AddUserPartialView").then(result => result.text())
+}
+
+/**
+ * 弹框进行提交
+ */
+async function submit() {
+    let data = {
+        UserName: document.querySelector("#UserName").value,
+        Sex: document.querySelector("input[name='Sex']:checked").value,
+        PassWord: document.querySelector("#PassWord").value,
+        Phone: document.querySelector("#Phone").value
+    }
+    const result = await fetch("/User/AddUser", {
+        method: "post",
+        body: objectToformData(data)
+    }).then(result => result.json())
+    if (result) {
+        
+        let myAlert = document.getElementById('myAlert')
+        myModal.hide();
+        myAlert.style.visibility = "visible";
+        setTimeout(() => {
+            myAlert.style.visibility = "hidden";
+        }, 1000)
+    }
+}
+
+function objectToformData(data) {
+    const formData = new FormData();
+    Object.keys(data).forEach((key) => {
+        formData.append(key, data[key]);
+    });
+    return formData
+}
 </script>
 </body>
 </html>

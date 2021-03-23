@@ -16,7 +16,7 @@ namespace WebApplication1.Entity
     {
         public int ID { get; set; }
         public string UserName { get; set; }
-        public Nullable<bool> Sex { get; set; }
+        public bool Sex { get; set; }
         public string PassWord { get; set; }
         public string Phone { get; set; }
         public Nullable<bool> IsDelete { get; set; }

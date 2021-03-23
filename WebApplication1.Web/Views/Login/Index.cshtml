@@ -1,11 +1,6 @@
 ﻿@using WebApplication1.Web.Models
 @{
     ViewBag.Title = "登录页";
-    List<Info_User_Model> infoUserModels = ViewData["userList"] as List<Info_User_Model>;
-}
-@foreach (var item in  infoUserModels)
-{
-    <p>@item.UserName</p>
 }
 <style>
     .div{
@@ -18,36 +13,56 @@
     <form class="div">
         <div class="mb-3">
             <label class="form-label">手机号</label>
-            <input type="text" class="form-control"  id="txtPhone">
+            <input type="text" class="form-control" id="txtPhone">
         </div>
         <div class="mb-3">
             <label class="form-label">密码</label>
-            <input type="password" class="form-control" id="txtPwd" >
+            <input type="password" class="form-control" id="txtPwd">
         </div>
         <button type="button" class="btn btn-primary" onclick="login()">提交</button>
     </form>
+    <div class="alert alert-success alert-dismissible fade show fixed-top" style="visibility: hidden" role="alert" id="myAlert">
+        登录成功!
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
 </div>
+
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<script src="~/Scripts/bootstrap.bundle.js"></script>
+<link href="~/Content/bootstrap.css" rel="stylesheet"/>
 <script >
+/**
+ * 进行登录
+ *
+ */
 async function login() {
     let data = {
         Phone: $("#txtPhone").val(),
         PassWord: $("#txtPwd").val()
     }
+    const result = await fetch("/Login/GetLoginByPhone", {
+        method: "post",
+        body: objectToformData(data)
+    }).then(result => result.json())
+    if (result.type === "success") {
+        // alert(result.message)
+        let myAlert = document.getElementById('myAlert')
+        myAlert.style.visibility = "visible";
+        setTimeout(() => {
+            myAlert.style.visibility = "hidden";
+            window.location.href = result.data.reutrnUrl;
+        }, 1000)
+    }
+}
+
+function objectToformData(data) {
     const formData = new FormData();
     Object.keys(data).forEach((key) => {
         formData.append(key, data[key]);
     });
-    const result = await fetch("/Login/GetLoginByPhone", {method: "post", body: formData}).then(result => result.json())
-    if (result.type === "success") {
-        // alert(result.message)
-        window.location.href=result.reutrnUrl;
-    }
+    return formData
 }
-
 </script>
-<script src="~/Scripts/jquery-3.4.1.js"></script>
-<script src="~/Scripts/bootstrap.js"></script>
-<link href="~/Content/bootstrap.css" rel="stylesheet"/>
 @* 推荐使用这种 *@
 @*<script src="@Url.Content("~/Scripts/jquery-3.4.1.js")"></script>
 <script src="@Url.Content("~/Scripts/bootstrap.js")"></script>
