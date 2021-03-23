@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Collections.Generic;
 using System.Web.Mvc;
-using Newtonsoft.Json;
 using WebApplication1.BLL;
 using WebApplication1.Entity;
 using WebApplication1.Web.Models;
@@ -13,8 +8,6 @@ namespace WebApplication1.Web.Controllers
 {
     public class UserController : Controller
     {
-
-
         // GET: User
         public ActionResult Index()
         {
@@ -49,15 +42,47 @@ namespace WebApplication1.Web.Controllers
             Result result = new Result();
             JsonResult jsonResult = new JsonResult();
             Info_User_BLL infoUserBll = new Info_User_BLL();
+            bool isOkAdd;
             model.IsDelete = false;
-            bool isOkAdd=infoUserBll.Insert(model);
-            if (isOkAdd)
+            if (model.ID == 0)
             {
-                result.message = "添加成功";
+                isOkAdd = infoUserBll.Insert(model);
+                if (isOkAdd)
+                {
+                    result.message = "添加成功";
+                }
             }
+            else
+            {
+                isOkAdd = infoUserBll.Update(model);
+                if (isOkAdd)
+                {
+                    result.message = "更新成功";
+                }
+            }
+
             jsonResult.Data = result;
             return jsonResult;
+        }
 
+        /// <summary>
+        /// 获取用户相关信息
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public JsonResult GetUserInfo(int userId)
+        {
+            Result result = new Result();
+            JsonResult jsonResult = new JsonResult();
+            Info_User_BLL infoUserBll = new Info_User_BLL();
+            Info_User infoUser = infoUserBll.GetModelByID(userId);
+            if (infoUser != null)
+            {
+                result.data = infoUser;
+            }
+
+            jsonResult.Data = result;
+            return jsonResult;
         }
     }
 }

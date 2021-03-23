@@ -39,7 +39,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
-                        <button type="button" class="btn btn-primary"  onclick="submit()" >提交</button>
+                        <button type="button" class="btn btn-primary"  onclick="submit(this)"  userid="0" id="submit">提交</button>
                     </div>
                 </div>
             </div>
@@ -54,6 +54,7 @@
                 <th scope="col">用户名</th>
                 <th scope="col">密码</th>
                 <th scope="col">手机号</th>
+                <th scope="col">修改</th>
             </tr>
             </thead>
             <tbody>
@@ -65,13 +66,13 @@
                     <td>@item.UserName</td>
                     <td>@item.PassWord</td>
                     <td>@item.Phone</td>
+                    <td><button type="button" class="btn btn-secondary" userid="@item.ID" onclick="changeUserInfo(this)" >修改</button></td>
                 </tr>
             }
             </tbody>
         </table>
         <div class="alert alert-success alert-dismissible fade show fixed-top" style="visibility: hidden" role="alert" id="myAlert">
-            添加成功!
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            
         </div>
     </div>
 
@@ -81,7 +82,7 @@
 <script>
 // 创建一个模态框
 let myModal = new bootstrap.Modal(document.getElementById('staticBackdrop'), {
-    backdrop:"static"
+    backdrop: "static"
 })
 
 /**
@@ -89,7 +90,7 @@ let myModal = new bootstrap.Modal(document.getElementById('staticBackdrop'), {
  *
  */
 async function openAddUserModal() {
-    
+
     document.querySelector("#modalContent").innerHTML = await getAddUserInfo();
     myModal.toggle()
 }
@@ -105,34 +106,60 @@ async function getAddUserInfo() {
 /**
  * 弹框进行提交
  */
-async function submit() {
+async function submit(e) {
     let data = {
         UserName: document.querySelector("#UserName").value,
         Sex: document.querySelector("input[name='Sex']:checked").value,
         PassWord: document.querySelector("#PassWord").value,
-        Phone: document.querySelector("#Phone").value
+        Phone: document.querySelector("#Phone").value,
+        ID: e.getAttribute("userid")
     }
+    console.log(data)
     const result = await fetch("/User/AddUser", {
         method: "post",
         body: objectToformData(data)
     }).then(result => result.json())
-    if (result) {
-        
+    if (result.type === "success") {
+
         let myAlert = document.getElementById('myAlert')
         myModal.hide();
         myAlert.style.visibility = "visible";
+        myAlert.innerHTML = result.message + '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
         setTimeout(() => {
             myAlert.style.visibility = "hidden";
         }, 1000)
     }
+    document.querySelector("#submit").setAttribute("userid", "0");
+
 }
 
+/**
+ * 对象转formData
+ *
+ */
 function objectToformData(data) {
     const formData = new FormData();
     Object.keys(data).forEach((key) => {
         formData.append(key, data[key]);
     });
     return formData
+}
+
+// 修改用户信息
+async function changeUserInfo(e) {
+    document.querySelector("#modalContent").innerHTML = await getAddUserInfo();
+    myModal.toggle();
+    const userInfo = await fetch("/User/GetUserInfo", {
+        method: "post",
+        body: objectToformData({userId: e.getAttribute("userid")})
+    }).then(result => result.json())
+    document.querySelector("#UserName").value = userInfo.data.UserName;
+    document.querySelector("#PassWord").value = userInfo.data.PassWord;
+    document.querySelector("#Phone").value = userInfo.data.Phone;
+    if (userInfo.data.Sex) {
+        document.querySelector("#radioWoman").setAttribute("checked", "checked");
+    }
+    document.querySelector("#submit").setAttribute("userid", userInfo.data.ID);
 }
 </script>
 </body>
