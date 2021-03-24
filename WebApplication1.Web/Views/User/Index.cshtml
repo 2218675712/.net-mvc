@@ -114,7 +114,6 @@ async function submit(e) {
         Phone: document.querySelector("#Phone").value,
         ID: e.getAttribute("userid")
     }
-    console.log(data)
     const result = await fetch("/User/AddUser", {
         method: "post",
         body: objectToformData(data)
@@ -130,6 +129,8 @@ async function submit(e) {
         }, 1000)
     }
     document.querySelector("#submit").setAttribute("userid", "0");
+    // 页面重新刷新
+    location.reload();
 
 }
 
