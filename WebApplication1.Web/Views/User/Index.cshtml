@@ -109,7 +109,7 @@ async function getAddUserInfo() {
 async function submit(e) {
     let data = {
         UserName: document.querySelector("#UserName").value,
-        Sex: !!document.querySelector("input[name='Sex']:checked").value,
+        Sex: !!parseInt(document.querySelector("input[name='Sex']:checked").value),
         PassWord: document.querySelector("#PassWord").value,
         Phone: document.querySelector("#Phone").value,
         ID: e.getAttribute("userid")
