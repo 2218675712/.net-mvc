@@ -109,7 +109,7 @@ async function getAddUserInfo() {
 async function submit(e) {
     let data = {
         UserName: document.querySelector("#UserName").value,
-        Sex: document.querySelector("input[name='Sex']:checked").value,
+        Sex: !!document.querySelector("input[name='Sex']:checked").value,
         PassWord: document.querySelector("#PassWord").value,
         Phone: document.querySelector("#Phone").value,
         ID: e.getAttribute("userid")
@@ -126,11 +126,12 @@ async function submit(e) {
         myAlert.innerHTML = result.message + '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
         setTimeout(() => {
             myAlert.style.visibility = "hidden";
+                // 页面重新刷新
+                location.reload();
         }, 1000)
     }
     document.querySelector("#submit").setAttribute("userid", "0");
-    // 页面重新刷新
-    location.reload();
+
 
 }
 
@@ -157,7 +158,7 @@ async function changeUserInfo(e) {
     document.querySelector("#UserName").value = userInfo.data.UserName;
     document.querySelector("#PassWord").value = userInfo.data.PassWord;
     document.querySelector("#Phone").value = userInfo.data.Phone;
-    if (userInfo.data.Sex) {
+    if (!userInfo.data.Sex) {
         document.querySelector("#radioWoman").setAttribute("checked", "checked");
     }
     document.querySelector("#submit").setAttribute("userid", userInfo.data.ID);
