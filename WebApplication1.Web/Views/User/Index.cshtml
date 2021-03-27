@@ -18,16 +18,52 @@
     <title>Index</title>
 </head>
 <body>
-<div>
+<div id="app">
 
-    <div class="addUser">
-        <!-- Button trigger modal -->
-        <button type="button" class="btn btn-primary"  onclick="openAddUserModal()">
-            添加/修改用户
-        </button>
+    <div class="row d-flex justify-content-between">
 
+        <div class="addUser col-3">
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-primary" v-on:click="openAddUserModal()">
+                添加用户
+            </button>
+        </div>
+        <div class="search col-4">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="请输入用户名/手机号" v-model:value="searchText" >
+                <button class="btn btn-outline-secondary" type="button" id="searchButton" v-on:click="_search()">搜索</button>
+            </div>
+        </div>
+    </div>
+    <div class="userList">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">用户ID</th>
+                    <th scope="col">用户名</th>
+                    <th scope="col">密码</th>
+                    <th scope="col">手机号</th>
+                    <th scope="col">修改</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="(item,index) in userList" :key="index">
+                        <th scope="row">{{item.ID}}</th>
+                        <td>{{item.UserName}}</td>
+                        <td>{{item.PassWord}}</td>
+                        <td>{{item.Phone}}</td>
+                        <td>
+                            <button type="button" class="btn btn-secondary" :userid="item.ID" v-on:click="changeUserInfo($event)">修改</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        <div class="alert alert-success alert-dismissible fade show fixed-top" style="visibility: hidden" role="alert" id="myAlert">
+
+        </div>
         <!-- Modal -->
-        <div class="modal fade " id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -35,106 +71,54 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <div id="modalContent"></div>
+
+                               <div class="row">
+                                   <div class="mb-3 col-6">
+                                       <label class="form-label">用户名</label>
+                                       <input type="text" class="form-control" id="UserName" v-model="formText.UserName">
+                                   </div>
+                                   <div class="mb-3 col-6">
+                                       <label class="form-label d-block">性别</label>
+                                       <div class="form-check form-check-inline">
+                                           <input class="form-check-input" type="radio" name="Sex" checked value="1" v-model="formText.Sex">
+                                           <label class="form-check-label">
+                                               男
+                                           </label>
+                                       </div>
+                                       <div class="form-check form-check-inline">
+                                           <input class="form-check-input" type="radio" name="Sex" value="0" id="radioWoman" v-model="formText.Sex">
+                                           <label class="form-check-label">
+                                               女
+                                           </label>
+                                       </div>
+                                   </div>
+                               </div>
+                               <div class="row">
+                                   <div class="mb-3 col-6">
+                                       <label class="form-label">密码</label>
+                                       <input type="password" class="form-control" id="PassWord" v-model="formText.PassWord">
+                                   </div>
+                                   <div class="mb-3 col-6">
+                                       <label class="form-label">手机号</label>
+                                       <input type="tel" class="form-control" id="Phone" v-model="formText.Phone">
+                                   </div>
+                               </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
-                        <button type="button" class="btn btn-primary"  onclick="submit(this)"  userid="0" id="submit">提交</button>
+                        <button type="button" class="btn btn-primary" v-on:click="submit()" userid="0" id="submit">提交</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="userList">
-
-        <table class="table">
-            <thead>
-            <tr>
-                <th scope="col">用户ID</th>
-                <th scope="col">用户名</th>
-                <th scope="col">密码</th>
-                <th scope="col">手机号</th>
-                <th scope="col">修改</th>
-            </tr>
-            </thead>
-            <tbody>
-
-            @foreach (var item in infoUserModels)
-            {
-                <tr>
-                    <th scope="row">@item.ID</th>
-                    <td>@item.UserName</td>
-                    <td>@item.PassWord</td>
-                    <td>@item.Phone</td>
-                    <td><button type="button" class="btn btn-secondary" userid="@item.ID" onclick="changeUserInfo(this)" >修改</button></td>
-                </tr>
-            }
-            </tbody>
-        </table>
-        <div class="alert alert-success alert-dismissible fade show fixed-top" style="visibility: hidden" role="alert" id="myAlert">
-            
-        </div>
-    </div>
-
 </div>
 <script src="~/Scripts/jquery-3.4.1.js"></script>
 <script src="~/Scripts/bootstrap.bundle.js"></script>
+<script src="~/Scripts/vue.js"></script>
+<script src="~/Scripts/axios.js"></script>
+
 <script>
-// 创建一个模态框
-let myModal = new bootstrap.Modal(document.getElementById('staticBackdrop'), {
-    backdrop: "static"
-})
-
-/**
- * 弹出添加模态框
- *
- */
-async function openAddUserModal() {
-
-    document.querySelector("#modalContent").innerHTML = await getAddUserInfo();
-    myModal.toggle()
-}
-
-/**
- * 获取添加用户的相关资料
- *
- */
-async function getAddUserInfo() {
-    return await fetch("/User/AddUserPartialView").then(result => result.text())
-}
-
-/**
- * 弹框进行提交
- */
-async function submit(e) {
-    let data = {
-        UserName: document.querySelector("#UserName").value,
-        Sex: !!parseInt(document.querySelector("input[name='Sex']:checked").value),
-        PassWord: document.querySelector("#PassWord").value,
-        Phone: document.querySelector("#Phone").value,
-        ID: e.getAttribute("userid")
-    }
-    const result = await fetch("/User/AddUser", {
-        method: "post",
-        body: objectToformData(data)
-    }).then(result => result.json())
-    if (result.type === "success") {
-
-        let myAlert = document.getElementById('myAlert')
-        myModal.hide();
-        myAlert.style.visibility = "visible";
-        myAlert.innerHTML = result.message + '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
-        setTimeout(() => {
-            myAlert.style.visibility = "hidden";
-                // 页面重新刷新
-                location.reload();
-        }, 1000)
-    }
-    document.querySelector("#submit").setAttribute("userid", "0");
-
-
-}
-
 /**
  * 对象转formData
  *
@@ -147,22 +131,104 @@ function objectToformData(data) {
     return formData
 }
 
-// 修改用户信息
-async function changeUserInfo(e) {
-    document.querySelector("#modalContent").innerHTML = await getAddUserInfo();
-    myModal.toggle();
-    const userInfo = await fetch("/User/GetUserInfo", {
-        method: "post",
-        body: objectToformData({userId: e.getAttribute("userid")})
-    }).then(result => result.json())
-    document.querySelector("#UserName").value = userInfo.data.UserName;
-    document.querySelector("#PassWord").value = userInfo.data.PassWord;
-    document.querySelector("#Phone").value = userInfo.data.Phone;
-    if (!userInfo.data.Sex) {
-        document.querySelector("#radioWoman").setAttribute("checked", "checked");
+axios.defaults.baseURL = 'https://localhost:44398';
+// 添加响应拦截器
+axios.interceptors.response.use(function (response) {
+    // 对响应数据做点什么
+    return response.data;
+  }, function (error) {
+    // 对响应错误做点什么
+    return Promise.reject(error);
+  });
+let vm = new Vue({
+    el: "#app",
+    data() {
+        return {
+            searchText: "",
+            userList: [],
+            modalContent: "",
+            formText: {
+                UserName: "",
+                Sex: "",
+                PassWord: "",
+                Phone: "",
+                ID: 0
+            }
+        }
+    },
+    methods: {
+        // 搜索
+        async _search() {
+            const userInfos = await axios({
+                method: 'post',
+                url: '/User/Search',
+                data: objectToformData({_search: this.searchText})
+            })
+            this.userList = userInfos.data
+        },
+        /**
+         * 弹出添加模态框
+         *
+         */
+        async openAddUserModal() {
+            myModal.show()
+        },
+        /**
+         * 弹框进行提交
+         */
+        async submit(e) {
+            const result = await axios({
+                method: 'post',
+                url: '/User/AddUser',
+                data: objectToformData(this.formText)
+            })
+            if (result.type === "success") {
+                let myAlert = document.getElementById('myAlert')
+                myModal.hide();
+                this.formText = {
+                    UserName: "",
+                    Sex: "",
+                    PassWord: "",
+                    Phone: "",
+                    ID: 0
+                }
+                myAlert.style.visibility = "visible";
+                myAlert.innerHTML = result.message + '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
+                setTimeout(() => {
+                    myAlert.style.visibility = "hidden";
+                    this._search();
+                }, 1000)
+            }
+            document.querySelector("#submit").setAttribute("userid", "0");
+            myModal.hide();
+        },
+        // 修改用户信息
+        async changeUserInfo(e) {
+            myModal.show();
+            const userInfo = await axios({
+                method: 'post',
+                url: '/User/GetUserInfo',
+                data: objectToformData({userId: e.target.getAttribute('userid')})
+            })
+            this.formText = userInfo.data;
+            if (userInfo.data.Sex) {
+                this.formText.Sex = 1;
+            } else {
+                this.formText.Sex = 0;
+            }
+            document.querySelector("#submit").setAttribute("userid", userInfo.data.ID);
+        }
+    },
+    created() {
+        this._search();
+    },
+    mounted() {
+        myModal = new bootstrap.Modal(document.getElementById('staticBackdrop'), {
+            backdrop: "static"
+        })
     }
-    document.querySelector("#submit").setAttribute("userid", userInfo.data.ID);
-}
+})
+
 </script>
 </body>
 </html>

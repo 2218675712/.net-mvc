@@ -21,16 +21,7 @@ namespace WebApplication1.Web.Controllers
             var list = infoUserBll.GetList();
             return list;
         }
-
-        /// <summary>
-        /// 返回一个局部视图页面
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        public ActionResult AddUserPartialView()
-        {
-            return PartialView();
-        }
+        
 
         /// <summary>
         /// 添加用户
@@ -81,6 +72,19 @@ namespace WebApplication1.Web.Controllers
                 result.data = infoUser;
             }
 
+            jsonResult.Data = result;
+            return jsonResult;
+        }
+        
+        [HttpPost]
+        public JsonResult Search(string _search)
+        {
+            Result result = new Result();
+            JsonResult jsonResult = new JsonResult();
+            Info_User_BLL infoUserBll = new Info_User_BLL();
+            List<Info_User> infoUsers = infoUserBll.GetList()
+                .FindAll(x => x.UserName.Contains(_search) || x.Phone.Contains(_search));
+            result.data = infoUsers;
             jsonResult.Data = result;
             return jsonResult;
         }
