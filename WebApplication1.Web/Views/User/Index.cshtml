@@ -249,7 +249,7 @@ let vm = new Vue({
             })
             this.userList = result.data.infoUsers
             this.page.totalNumber = result.data.count
-            this.page.totalPages = result.data.count / this.page.pageSize
+            this.page.totalPages = Math.ceil(result.data.count / this.page.pageSize)
         },
 
         // 上一页和下一页
