@@ -11,17 +11,9 @@ namespace WebApplication1.Web.Controllers
         // GET: User
         public ActionResult Index()
         {
-            ViewData["list"] = GetList();
             return View();
         }
 
-        public List<Info_User> GetList()
-        {
-            Info_User_BLL infoUserBll = new Info_User_BLL();
-            var list = infoUserBll.GetList();
-            return list;
-        }
-        
 
         /// <summary>
         /// 添加用户
@@ -75,7 +67,12 @@ namespace WebApplication1.Web.Controllers
             jsonResult.Data = result;
             return jsonResult;
         }
-        
+
+        /// <summary>
+        /// 通用搜索
+        /// </summary>
+        /// <param name="_search"></param>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult Search(string _search)
         {
@@ -85,6 +82,25 @@ namespace WebApplication1.Web.Controllers
             List<Info_User> infoUsers = infoUserBll.GetList()
                 .FindAll(x => x.UserName.Contains(_search) || x.Phone.Contains(_search));
             result.data = infoUsers;
+            jsonResult.Data = result;
+            return jsonResult;
+        }
+/// <summary>
+/// 分页接口
+/// </summary>
+/// <param name="pageNumber">当前页</param>
+/// <param name="pageSize">页码</param>
+/// <param name="sortOrder">排序(升序or降序)</param>
+/// <returns></returns>
+[HttpPost]
+        public JsonResult Pagination(int pageNumber,int pageSize,string sortOrder)
+        {
+            Result result = new Result();
+            JsonResult jsonResult = new JsonResult();
+            Info_User_BLL infoUserBll = new Info_User_BLL();
+            int count = infoUserBll.GetEntitiesCount();
+            IEnumerable<Info_User> infoUsers=infoUserBll.GetEntitiesForPaging(pageNumber, pageSize, sortOrder);
+            result.data = new {infoUsers,count};
             jsonResult.Data = result;
             return jsonResult;
         }

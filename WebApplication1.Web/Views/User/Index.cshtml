@@ -1,12 +1,7 @@
-﻿@using WebApplication1.Entity
+﻿
 
 @{
     Layout = null;
-    List<Info_User> infoUserModels = ViewData["list"] as List<Info_User>;
-    if (infoUserModels == null)
-    {
-        infoUserModels = new List<Info_User>();
-    }
 }
 
 <!DOCTYPE html>
@@ -30,34 +25,53 @@
         </div>
         <div class="search col-4">
             <div class="input-group mb-3">
-                <input type="text" class="form-control" placeholder="请输入用户名/手机号" v-model:value="searchText" >
+                <input type="text" class="form-control" placeholder="请输入用户名/手机号" v-model:value="searchText">
                 <button class="btn btn-outline-secondary" type="button" id="searchButton" v-on:click="_search()">搜索</button>
             </div>
         </div>
     </div>
     <div class="userList">
-            <table class="table">
-                <thead>
-                <tr>
-                    <th scope="col">用户ID</th>
-                    <th scope="col">用户名</th>
-                    <th scope="col">密码</th>
-                    <th scope="col">手机号</th>
-                    <th scope="col">修改</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr v-for="(item,index) in userList" :key="index">
-                        <th scope="row">{{item.ID}}</th>
-                        <td>{{item.UserName}}</td>
-                        <td>{{item.PassWord}}</td>
-                        <td>{{item.Phone}}</td>
-                        <td>
-                            <button type="button" class="btn btn-secondary" :userid="item.ID" v-on:click="changeUserInfo($event)">修改</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">用户ID</th>
+                <th scope="col">用户名</th>
+                <th scope="col">密码</th>
+                <th scope="col">手机号</th>
+                <th scope="col">修改</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="(item,index) in userList" :key="index">
+                <th scope="row">{{item.ID}}</th>
+                <td>{{item.UserName}}</td>
+                <td>{{item.PassWord}}</td>
+                <td>{{item.Phone}}</td>
+                <td>
+                    <button type="button" class="btn btn-secondary" :userid="item.ID" v-on:click="changeUserInfo($event)">修改</button>
+                </td>
+            </tr>
+            </tbody>
+
+        </table>
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                <li class="page-item" v-on:click="prePage()" >
+                    <a class="page-link"  aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <li class="page-item" v-for="(item,index) in page.totalPages" :key="index">
+                    <a class="page-link" v-on:click="pagination(item)">{{item}}</a>
+                </li>
+
+                <li class="page-item" v-on:click="nextPage()">
+                    <a class="page-link"  aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
 
         <div class="alert alert-success alert-dismissible fade show fixed-top" style="visibility: hidden" role="alert" id="myAlert">
 
@@ -72,37 +86,37 @@
                     </div>
                     <div class="modal-body">
 
-                               <div class="row">
-                                   <div class="mb-3 col-6">
-                                       <label class="form-label">用户名</label>
-                                       <input type="text" class="form-control" id="UserName" v-model="formText.UserName">
-                                   </div>
-                                   <div class="mb-3 col-6">
-                                       <label class="form-label d-block">性别</label>
-                                       <div class="form-check form-check-inline">
-                                           <input class="form-check-input" type="radio" name="Sex" checked value="1" v-model="formText.Sex">
-                                           <label class="form-check-label">
-                                               男
-                                           </label>
-                                       </div>
-                                       <div class="form-check form-check-inline">
-                                           <input class="form-check-input" type="radio" name="Sex" value="0" id="radioWoman" v-model="formText.Sex">
-                                           <label class="form-check-label">
-                                               女
-                                           </label>
-                                       </div>
-                                   </div>
-                               </div>
-                               <div class="row">
-                                   <div class="mb-3 col-6">
-                                       <label class="form-label">密码</label>
-                                       <input type="password" class="form-control" id="PassWord" v-model="formText.PassWord">
-                                   </div>
-                                   <div class="mb-3 col-6">
-                                       <label class="form-label">手机号</label>
-                                       <input type="tel" class="form-control" id="Phone" v-model="formText.Phone">
-                                   </div>
-                               </div>
+                        <div class="row">
+                            <div class="mb-3 col-6">
+                                <label class="form-label">用户名</label>
+                                <input type="text" class="form-control" id="UserName" v-model="formText.UserName">
+                            </div>
+                            <div class="mb-3 col-6">
+                                <label class="form-label d-block">性别</label>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="Sex" checked value="1" v-model="formText.Sex">
+                                    <label class="form-check-label">
+                                        男
+                                    </label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="Sex" value="0" id="radioWoman" v-model="formText.Sex">
+                                    <label class="form-check-label">
+                                        女
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="mb-3 col-6">
+                                <label class="form-label">密码</label>
+                                <input type="password" class="form-control" id="PassWord" v-model="formText.PassWord">
+                            </div>
+                            <div class="mb-3 col-6">
+                                <label class="form-label">手机号</label>
+                                <input type="tel" class="form-control" id="Phone" v-model="formText.Phone">
+                            </div>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
@@ -136,10 +150,10 @@ axios.defaults.baseURL = 'https://localhost:44398';
 axios.interceptors.response.use(function (response) {
     // 对响应数据做点什么
     return response.data;
-  }, function (error) {
+}, function (error) {
     // 对响应错误做点什么
     return Promise.reject(error);
-  });
+});
 let vm = new Vue({
     el: "#app",
     data() {
@@ -153,6 +167,18 @@ let vm = new Vue({
                 PassWord: "",
                 Phone: "",
                 ID: 0
+            },
+            page: {
+                // 当前页
+                pageNumber: 1,
+                // 一页几条数据
+                pageSize: 3,
+                // 升序降序
+                sortOrder: "",
+                // 总条数
+                totalNumber: 1,
+                // 总页数
+                totalPages: 1
             }
         }
     },
@@ -166,16 +192,11 @@ let vm = new Vue({
             })
             this.userList = userInfos.data
         },
-        /**
-         * 弹出添加模态框
-         *
-         */
+        // 弹出添加模态框
         async openAddUserModal() {
             myModal.show()
         },
-        /**
-         * 弹框进行提交
-         */
+        // 弹框进行提交
         async submit(e) {
             const result = await axios({
                 method: 'post',
@@ -217,10 +238,37 @@ let vm = new Vue({
                 this.formText.Sex = 0;
             }
             document.querySelector("#submit").setAttribute("userid", userInfo.data.ID);
+        },
+        // 获取分页数据
+        async pagination(pageNumber = "1") {
+            this.page.pageNumber = pageNumber
+            const result = await axios({
+                method: 'post',
+                url: '/User/Pagination',
+                data: objectToformData(this.page)
+            })
+            this.userList = result.data.infoUsers
+            this.page.totalNumber = result.data.count
+            this.page.totalPages = result.data.count / this.page.pageSize
+        },
+
+        // 上一页和下一页
+        // 下一页
+        nextPage() {
+            if (this.page.pageNumber === this.page.totalPages) return;
+            this.pagination(this.page.pageNumber + 1)
+        },
+        // 上一页
+        prePage() {
+            if (this.page.pageNumber === 0) return;
+            this.pagination(this.page.pageNumber - 1)
+
         }
     },
+    computed: {},
     created() {
-        this._search();
+        // this._search();
+        this.pagination();
     },
     mounted() {
         myModal = new bootstrap.Modal(document.getElementById('staticBackdrop'), {
@@ -228,6 +276,7 @@ let vm = new Vue({
         })
     }
 })
+
 
 </script>
 </body>

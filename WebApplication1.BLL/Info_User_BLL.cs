@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using WebApplication1.Entity;
 
@@ -63,6 +64,7 @@ namespace WebApplication1.BLL
 
             return isOk;
         }
+
         /// <summary>
         /// 根据id获取model
         /// </summary>
@@ -79,9 +81,31 @@ namespace WebApplication1.BLL
         /// <param name="phone">手机号</param>
         /// <param name="pwd">密码</param>
         /// <returns></returns>
-        public Info_User Login(string phone,string pwd)
+        public Info_User Login(string phone, string pwd)
         {
             return Dao.GetEntity(x => x.Phone == phone && x.PassWord == pwd);
+        }
+
+        /// <summary>
+        /// 分页查询(Linq分页方式)
+        /// </summary>
+        /// <param name="pageNumber">当前页</param>
+        /// <param name="pageSize">页码</param>
+        /// <param name="sortOrder">排序(升序or降序)</param>
+        /// <returns></returns>
+        public virtual IEnumerable<Info_User> GetEntitiesForPaging(int pageNumber, int pageSize, string sortOrder)
+        {
+            return Dao.GetEntitiesForPaging(pageNumber, pageSize, x => x.ID.ToString(), sortOrder,
+                y => y.IsDelete == false);
+        }
+
+        /// <summary>
+        /// 计算总个数(分页)
+        /// </summary>
+        /// <returns></returns>
+        public int GetEntitiesCount()
+        {
+            return Dao.GetEntitiesCount(i => i.IsDelete == false);
         }
     }
 }
